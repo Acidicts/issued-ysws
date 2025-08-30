@@ -22,7 +22,7 @@ app.get('/start', (req, res) => {
 });
 
 app.get('/favicon', (req, res) => {
-    res.sendFile(__dirname + '/public/assets/favicon.png');
+    res.sendFile(__dirname + '/src/assets/favicon.png');
 });
 
 app.listen(PORT, () => {
