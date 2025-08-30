@@ -1,0 +1,49 @@
+body {
+    padding-left: 2rem;
+}
+
+#title {
+    text-align: left;
+    font-size: 6rem;
+    font-weight: 400;
+    text-shadow: 0 0 1rem rgba(0, 0, 0, 0.75);
+}
+
+#title-div {
+    margin-bottom: 2rem;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+#home {
+    height: 2rem;
+    margin-left: auto;
+}
+
+#YS-Paragraph {
+    margin-bottom: 1rem;
+    overflow: auto;
+    width: 80%;
+    padding-left: 1rem;
+}
+
+#WS-Paragraph {
+    margin-bottom: 1rem;
+    overflow: auto;
+    width: 80%;
+    padding-left: 1rem;
+}
+
+@media screen and (max-width: 600px) {
+    #title {
+        font-size: 4rem;
+    }
+    #YS-Paragraph, #WS-Paragraph {
+        width: 100%;
+        padding-left: 0;
+    }
+    #home {
+        top: -1rem;
+    }
+}

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FAQ</title>
+    <link rel="icon" type="image/x-icon" href="/favicon">
+
+    <link rel="stylesheet" href="styles/faq.css">
+    <link rel="stylesheet" href="styles/themes.css">
+    <script src="scripts/transition.js"></script>
+    <script src="scripts/faq.js" defer></script>
+</head>
+<body>
+        
+        <div id="title-div">
+            <h1 id="title" class="workbench">FA<span style="width: 0.1rem; font-size: 0.7rem;" > </span>Q</h1>
+            <button id="home" class="btn-type-1" onclick="transitionToPage('/')">Go to Home</button>
+        </div>
+        <div id="content" class="offside">
+            <div class="faq-container">
+                <div class="faq-header">
+                    <h3 class="faq-question">What is this?</h3>
+                    <span class="faq-icon">+</span>
+                </div>
+                <hr>
+                <div class="faq-answer">
+                    <p>This is a YSWS where you make a design themed around hackclub or coding get bugs (our currency) spend bugs on custom apparel</p>
+                </div>
+            </div>
+            <div class="faq-container">
+                <div class="faq-header">
+                    <h3 class="faq-question">What is a YSWS?</h3>
+                    <span class="faq-icon">+</span>
+                </div>
+                <hr>
+                <div class="faq-answer">
+                    <p>YSWS means <strong>Y</strong>ou <strong>S</strong>hip <strong>W</strong>e <strong>S</strong>hip it is a program run by <a style="color: #ec3750; text-decoration: none;" href="https://hackclub.com">HackClub</a></p>
+                </div>
+            </div>
+        </div>
+    </body>
+    <footer style="text-align: center; margin-top: 10rem; height: 6rem; background-color: darkslategray; line-height: 4rem; color: white;"> 
+        Ask Your own Question 
+        <button id="faq-submit-new" onclick="location.href='https://issued.fillout.com/faq'" class="btn-type-1">Here</button>
+    </footer>
+</html>

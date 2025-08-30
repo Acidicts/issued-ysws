@@ -1,0 +1,20 @@
+@font-face {
+    font-family: 'workbench';
+    src: url('fonts/Workbench.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'offside';
+    src: url('fonts/Offside.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'dynapuff';
+    src: url('fonts/DynaPuff.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
