@@ -1,9 +1,17 @@
 {
+  "name": "issued-ysws",
+  "version": "1.0.0",
+  "main": "main.js",
+  "engines": {
+    "node": "18.x"
+  },
   "dependencies": {
     "express": "^5.1.0",
     "nodemon": "^3.1.10"
   },
   "scripts": {
-    "start": "node main.js"
+    "start": "node main.js",
+    "dev": "nodemon main.js",
+    "build": "echo 'No build step required'"
   }
 }
