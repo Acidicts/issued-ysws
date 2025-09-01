@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', function(event) {
 })
 
 document.addEventListener('DOMContentLoaded', function(event) {
-    document.querySelectorAll('[disabled]').querySelectorAll('.btn').forEach(function(el) {
+    document.querySelectorAll('[disabled]').forEach(function(el) {
         el.classList.add('btn-unset');
     });
 });
