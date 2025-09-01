@@ -1,0 +1,76 @@
+#roadmap {
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+}
+
+.step {
+    flex: 1;
+    padding: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 0.5rem;
+    background-color: #f9f9f9;
+}
+
+.arrow {
+    align-self: center;
+    animation: pulse 1.6s infinite;
+}
+
+.arrow:nth-child(2) {
+    animation-delay: 0.4s;
+}
+
+.arrow:nth-child(3) {
+    animation-delay: 0.8s;
+}
+
+.arrow:nth-child(4) {
+    animation-delay: 1.2s;
+}
+
+#btns {
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    flex-direction: row;
+    gap: 0.5rem;
+}
+
+#btns button {
+    height: 2rem;
+    width: fit-content;
+}
+
+@keyframes pulse {
+    0% {
+        opacity: 0.2;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 1;
+        transform: scale(2);
+        transform: translate3d(1px, 1px, 1px);
+    }
+    100% {
+        opacity: 0.5;
+        transform: scale(1);
+    }
+}
+
+@media (max-width: 750px) {
+    #roadmap {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .arrow {
+        transform-box: fill-box;
+        transform-origin: center;
+        transform: rotate(90deg) !important;
+        will-change: transform;
+        align-self: center;
+        margin: 0.5rem 0;
+    }
+}

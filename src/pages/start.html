@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Get Started</title>
+    <link rel="icon" type="image/x-icon" href="/favicon">
+    <link rel="stylesheet" href="styles/start.css">
+    <link rel="stylesheet" href="styles/themes.css">
+    <link rel="stylesheet" href="styles/alert.css">
+    <script src="scripts/alert.js"></script>
+    <script src="scripts/transition.js"></script>
+</head>
+    <body>
+        <h1 id="title" class="workbench">Get Started</h1>
+        <div id="container">
+            <div id="roadmap">
+                <div class="step offside" id="step1">
+                    <h2>Step 1: Design</h2>
+                    <p>Create a design themed around hackclub or coding using our editor. Make sure it's unique and represents your style!</p>
+                </div>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="arrow"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
+                <div class="step offside" id="step2">
+                    <h2>Step 2: Submit</h2>
+                    <p>Submit your design to our platform. You can use the submission form available on our website.</p>
+                </div>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="arrow"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
+                <div class="step offside" id="step3">
+                    <h2>Step 3: Vote</h2>
+                    <p>Vote for your favorite designs. The top 5 designs with the most votes will be featured in our store.</p>
+                </div>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="arrow"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
+                <div class="step offside" id="step4">
+                    <h2>Step 4: Order</h2>
+                    <p>Once the top designs are announced, you can order apparel featuring those designs directly from our store.</p>
+                </div>
+            </div>
+            <div id="btns" class="offside">
+                <button onclick="transitionToPage('/editor')" class="btn-type-1 disabled" disabled>Editor</button>
+                <button onclick="transitionToPage('/')" class="btn-type-1">Go to Home</button>                
+            </div>
+        </div>
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                setTimeout(() => {
+                    window.customAlert.warning("Warning", "This YSWS is currently a WIP and is not active");
+                }, 100);
+            });
+        </script>
+    </body>
+</html>

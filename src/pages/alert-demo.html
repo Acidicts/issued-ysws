@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Custom Alert Demo</title>
+    <link rel="icon" type="image/x-icon" href="/favicon">
+    <link rel="stylesheet" href="styles/alert.css">
+    <link rel="stylesheet" href="styles/themes.css">
+    <script src="scripts/alert.js"></script>
+    <script src="scripts/transition.js"></script>
+    <style>
+        body {
+            padding: 2rem;
+            font-family: offside, monospace;
+        }
+        .demo-section {
+            margin-bottom: 2rem;
+        }
+        .demo-buttons {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        h1, h2 {
+            font-family: workbench, monospace;
+        }
+    </style>
+</head>
+<body>
+    <h1>Custom Alert Demo</h1>
+    
+    <div class="demo-section">
+        <h2>Basic Alerts</h2>
+        <div class="demo-buttons">
+            <button class="btn-type-1" onclick="showInfo('Information', 'This is an info alert!')">Info Alert</button>
+            <button class="btn-type-1" onclick="showSuccess('Success!', 'Operation completed successfully!')">Success Alert</button>
+            <button class="btn-type-1" onclick="showWarning('Warning', 'Please check your input!')">Warning Alert</button>
+            <button class="btn-type-1" onclick="showError('Error', 'Something went wrong!')">Error Alert</button>
+        </div>
+    </div>
+
+    <div class="demo-section">
+        <h2>Custom Alerts</h2>
+        <div class="demo-buttons">
+            <button class="btn-type-1" onclick="showCustomAlert()">Custom Alert</button>
+            <button class="btn-type-1" onclick="showConfirmDialog()">Confirm Dialog</button>
+            <button class="btn-type-1" onclick="showComplexAlert()">Complex Alert</button>
+        </div>
+    </div>
+
+    <div class="demo-section">
+        <h2>Navigation</h2>
+        <div class="demo-buttons">
+            <button class="btn-type-1" onclick="transitionToPage('/')">Go to Home</button>
+        </div>
+    </div>
+
+    <script>
+        function showCustomAlert() {
+            showAlert({
+                title: 'Custom Alert',
+                message: 'This is a custom alert with HTML content!<br><br><strong>Features:</strong><ul><li>HTML support</li><li>Custom buttons</li><li>Different types</li><li>Animations</li></ul>',
+                type: 'info',
+                buttons: [
+                    { text: 'Close', action: () => console.log('Custom alert closed!') }
+                ]
+            });
+        }
+
+        function showConfirmDialog() {
+            showConfirm(
+                'Delete Item',
+                'Are you sure you want to delete this item? This action cannot be undone.',
+                () => {
+                    showSuccess('Deleted!', 'Item has been successfully deleted.');
+                },
+                () => {
+                    showInfo('Cancelled', 'Delete operation was cancelled.');
+                }
+            );
+        }
+
+        function showComplexAlert() {
+            showAlert({
+                title: 'Choose an Option',
+                message: 'What would you like to do next?',
+                type: 'info',
+                buttons: [
+                    { 
+                        text: 'Option 1', 
+                        action: () => showSuccess('Option 1', 'You chose option 1!'),
+                        class: 'primary'
+                    },
+                    { 
+                        text: 'Option 2', 
+                        action: () => showWarning('Option 2', 'You chose option 2!')
+                    },
+                    { 
+                        text: 'Cancel', 
+                        action: () => console.log('Cancelled'),
+                        class: 'danger'
+                    }
+                ],
+                showCloseButton: false
+            });
+        }
+    </script>
+</body>
+</html>
