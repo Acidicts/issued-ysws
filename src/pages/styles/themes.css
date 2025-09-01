@@ -64,3 +64,15 @@ body {
     transform: translateX(100%);
     transition: transform .75s ease-in-out;
 }
+
+.btn-unset:hover {
+    font-family: offside, monospace;
+    background-color: transparent;
+    border: dashed 2px rgba(0, 0, 0, 0.5);
+    color: black;
+    cursor: not-allowed;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    transition: all 0.5s ease-in;
+}

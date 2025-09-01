@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 - Page Not Found</title>
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <script src="scripts/transition.js"></script>
+    <link rel="stylesheet" href="styles/404.css">
+    <link rel="stylesheet" href="styles/themes.css">
+</head>
+    <body>
+        <div id="container">
+            <div class="workbench" id="title">404 - Page Not Found</div>
+            
+            <br id="break">
+
+            <div id="container2">
+                <div id="message">
+                    <p>Sorry, the page you are looking for does not exist.</p>
+                    <p id="message_url">Please check the <span id="URL">URL</span> or return to the <a href="/">homepage</a>.</p>
+                </div>
+                <hr>
+                <p class="offside">Join here at <a href="https://hackclub.slack.com/archives/C09C9M0N2UC">#issued</a></p>
+            </div>
+        </div>
+        <script>
+            const urlParams = new URLSearchParams(window.location.search);
+            const errorParam = urlParams.get('error');
+            if (errorParam) {
+                document.getElementById('URL').textContent = "URL :" + errorParam + " Exists";
+            } else {
+                document.getElementById('message_url').textContent = 'Why did you actively search for this?';
+            }
+        </script>
+    </body>
+</html>
