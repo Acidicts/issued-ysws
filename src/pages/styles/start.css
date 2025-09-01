@@ -74,3 +74,16 @@
         margin: 0.5rem 0;
     }
 }
+
+#title {
+    font-size: 6rem;
+    font-weight: 400;
+    left: 0;
+    text-shadow: 0 0 1rem rgba(0, 0, 0, 0.75);
+}
+
+@media screen and (max-width: 768px) {
+    #title {
+        font-size: 3rem;
+    }
+}
