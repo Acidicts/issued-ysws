@@ -9,7 +9,7 @@ YS : A Hackclub or Code themed designs using a custom editor for svg
 WS : A currency based store to buy custom merch made by fellow Hackclub-bers
 
 1. Make Designs 🎨
-2. Submit to be approved by me 😃
+2. Submit and get approved by me 😃
 3. Vote on other's 🗨️
 4. Earn Bugs 🐛
 5. Buy Swag 🤑
