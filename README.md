@@ -4,7 +4,7 @@
 
 Look No further <strong>✨<a href=https://hackclub.slack.com/archives/C09C9M0N2UC>#issued</a>✨</strong> is here :
 
-YS : Hackclub or Code themed designs using a blot like editor
+YS : A Hackclub or Code themed designs using a custom editor for svg
 
 WS : A currency based store to buy custom merch made by fellow Hackclub-bers
 
