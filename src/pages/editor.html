@@ -1,0 +1,2159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Issued SVG Code Editor</title>
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <style>
+    /* General styling */
+    body {
+      margin: 0;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      text-decoration: none;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: #2d3748;
+      line-height: 1.6;
+    }
+
+    /* Header Navigation */
+    .header {
+      background: rgba(255, 255, 255, 0.98);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+
+    .header-content {
+      max-width: 1400px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 24px;
+    }
+
+    .logo {
+      font-size: 24px;
+      font-weight: 700;
+      color: #667eea;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .navbar-actions {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 14px;
+      color: #4a5568;
+    }
+
+    .user-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 16px;
+      border: 2px solid #e2e8f0;
+    }
+
+    .auth-section {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .auth-section button {
+      background: #667eea;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+      transition: all 0.2s ease;
+    }
+
+    .auth-section button:hover {
+      background: #5a67d8;
+      transform: translateY(-1px);
+    }
+
+    .file-actions {
+      position: relative;
+      display: inline-block;
+    }
+
+    .dropdown-toggle {
+      background: #667eea;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s ease;
+    }
+
+    .dropdown-toggle:hover {
+      background: #5a67d8;
+      transform: translateY(-1px);
+    }
+
+    .dropdown-menu {
+      display: none;
+      position: absolute;
+      top: 100%;
+      right: 0;
+      background: rgba(255, 255, 255, 0.98);
+      backdrop-filter: blur(20px);
+      min-width: 220px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+      border-radius: 12px;
+      z-index: 1000;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      margin-top: 8px;
+      overflow: hidden;
+    }
+
+    .dropdown-menu.show {
+      display: block;
+    }
+
+    .dropdown-item {
+      display: block;
+      width: 100%;
+      padding: 12px 16px;
+      background: none;
+      border: none;
+      text-align: left;
+      cursor: pointer;
+      font-size: 14px;
+      color: #4a5568;
+      text-decoration: none;
+      transition: all 0.2s ease;
+      font-weight: 500;
+    }
+
+    .dropdown-item:hover {
+      background: #f7fafc;
+      color: #667eea;
+    }
+
+    .dropdown-divider {
+      height: 1px;
+      background-color: #e2e8f0;
+      margin: 4px 0;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.5);
+    }
+
+    .modal-content {
+      background-color: white;
+      margin: 5% auto;
+      padding: 20px;
+      border-radius: 5px;
+      width: 80%;
+      max-width: 600px;
+      max-height: 80vh;
+      overflow-y: auto;
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .close {
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    /* Custom Alert System */
+    .custom-alert {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(20px);
+      border-radius: 12px;
+      padding: 16px 20px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      z-index: 10000;
+      min-width: 300px;
+      max-width: 450px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      transform: translateX(500px);
+      opacity: 0;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .custom-alert.show {
+      transform: translateX(0);
+      opacity: 1;
+    }
+
+    .custom-alert.success {
+      border-left: 4px solid #10b981;
+    }
+
+    .custom-alert.error {
+      border-left: 4px solid #ef4444;
+    }
+
+    .custom-alert.warning {
+      border-left: 4px solid #f59e0b;
+    }
+
+    .custom-alert.info {
+      border-left: 4px solid #3b82f6;
+    }
+
+    .alert-icon {
+      width: 24px;
+      height: 24px;
+      flex-shrink: 0;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 14px;
+    }
+
+    .alert-icon.success {
+      background: #10b981;
+      color: white;
+    }
+
+    .alert-icon.error {
+      background: #ef4444;
+      color: white;
+    }
+
+    .alert-icon.warning {
+      background: #f59e0b;
+      color: white;
+    }
+
+    .alert-icon.info {
+      background: #3b82f6;
+      color: white;
+    }
+
+    .alert-content {
+      flex: 1;
+      font-size: 14px;
+      line-height: 1.4;
+      color: #374151;
+      font-weight: 500;
+    }
+
+    .alert-close {
+      background: none;
+      border: none;
+      font-size: 18px;
+      cursor: pointer;
+      color: #6b7280;
+      padding: 0;
+      width: 24px;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 4px;
+      transition: all 0.2s ease;
+    }
+
+    .alert-close:hover {
+      background: #f3f4f6;
+      color: #374151;
+    }
+
+    .file-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .file-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 3px;
+      background-color: #f9f9f9;
+    }
+
+    .file-info h4 {
+      margin: 0 0 5px 0;
+      font-size: 14px;
+    }
+
+    .file-info p {
+      margin: 0;
+      font-size: 12px;
+      color: #666;
+    }
+
+    .file-actions button {
+      margin-left: 5px;
+      padding: 3px 8px;
+      font-size: 11px;
+    }
+
+    .save-form {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .save-form input {
+      flex: 1;
+      padding: 8px;
+      border: 1px solid #ddd;
+      border-radius: 3px;
+    }
+
+    /* Split the screen into two sections */
+    .container {
+      display: flex;
+      flex: 1;
+      background: rgba(255, 255, 255, 0.95);
+      margin: 20px;
+      border-radius: 16px;
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+    }
+
+    .editor, .preview {
+      flex: 1;
+      padding: 20px;
+      box-sizing: border-box;
+      text-decoration: none;
+    }
+
+    .editor {
+      border-right: 1px solid rgba(0, 0, 0, 0.1);
+      background-color: #fafafa;
+    }
+
+    .preview {
+      background-color: #fff;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .preview-area {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 200px;
+      background: #ffffff;
+      border-radius: 8px;
+      border: 1px solid #e2e8f0;
+      margin-bottom: 20px;
+      background-image: 
+        linear-gradient(45deg, #f8f9fa 25%, transparent 25%),
+        linear-gradient(-45deg, #f8f9fa 25%, transparent 25%),
+        linear-gradient(45deg, transparent 75%, #f8f9fa 75%),
+        linear-gradient(-45deg, transparent 75%, #f8f9fa 75%);
+      background-size: 20px 20px;
+      background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+    }
+
+    /* Textarea styling */
+    textarea {
+      width: 100%;
+      height: 100%;
+      border: none;
+      resize: none;
+      font-family: 'JetBrains Mono', 'Fira Code', 'Monaco', 'Consolas', monospace;
+      font-size: 14px;
+      outline: none;
+      background-color: transparent;
+      color: #2d3748;
+      line-height: 1.6;
+      padding: 0;
+      margin: 0;
+      word-wrap: break-word;
+      word-break: break-all;
+    }
+
+    /* Error highlighting */
+    .editor-container {
+      position: relative;
+      height: 100%;
+      background: #ffffff;
+      border-radius: 8px;
+      border: 1px solid #e2e8f0;
+      padding: 16px;
+    }
+
+    .error-overlay {
+      display: none;
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      pointer-events: none;
+      font-family: monospace;
+      font-size: 14px;
+      line-height: 1.5;
+      padding: 0;
+      margin: 0;
+      border: none;
+      box-sizing: border-box;
+      white-space: pre-wrap;
+      overflow: hidden;
+      word-wrap: break-word;
+      word-break: break-all;
+    }
+
+    .error-line {
+      text-decoration: underline;
+      text-decoration-color: red;
+      text-decoration-thickness: 2px;
+      background-color: rgba(255, 0, 0, 0.1);
+    }
+
+    .error-info {
+      color: red;
+      font-size: 12px;
+      margin-top: 10px;
+      padding: 5px;
+      background-color: rgba(255, 0, 0, 0.1);
+      border-left: 3px solid red;
+    }
+
+    .clipboard-status {
+      font-size: 11px;
+      margin-top: 8px;
+      padding: 6px 8px;
+      background: rgba(103, 126, 234, 0.1);
+      border: 1px solid rgba(103, 126, 234, 0.2);
+      border-radius: 6px;
+      color: #4a5568;
+      font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+    }
+
+    #clipboardContent {
+      font-weight: 500;
+      color: #667eea;
+    }
+
+    /* SVG preview styling */
+    .preview svg {
+      max-width: 100%;
+      max-height: 100%;
+    }
+
+    /* SVG Guide styling */
+    .guide-section {
+      background-color: #f8f9fa;
+      border-top: 2px solid #ccc;
+      padding: 15px;
+      max-height: 40vh;
+      overflow-y: auto;
+    }
+
+    .guide-section h3 {
+      margin: 0 0 15px 0;
+      color: #333;
+      font-size: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .guide-content {
+      font-size: 13px;
+      line-height: 1.4;
+    }
+
+    .guide-example {
+      background-color: #e9ecef;
+      padding: 8px;
+      margin: 8px 0;
+      border-radius: 3px;
+      font-family: monospace;
+      font-size: 12px;
+      border-left: 3px solid #007bff;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+
+    .guide-example:hover {
+      background-color: #dee2e6;
+    }
+
+    .guide-example::before {
+      content: "📋 Click to copy";
+      font-size: 10px;
+      color: #6c757d;
+      float: right;
+      font-family: Arial, sans-serif;
+    }
+
+    .guide-section code {
+      background-color: #e9ecef;
+      padding: 2px 4px;
+      border-radius: 2px;
+      font-family: monospace;
+      font-size: 12px;
+    }
+
+    .guide-category {
+      margin-bottom: 20px;
+      border: 1px solid #dee2e6;
+      border-radius: 5px;
+      padding: 12px;
+      background-color: white;
+    }
+
+    .guide-category h4 {
+      margin: 0 0 8px 0;
+      color: #495057;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .guide-category p {
+      margin: 5px 0;
+      color: #6c757d;
+    }
+
+    .guide-tabs {
+      display: flex;
+      gap: 5px;
+      margin-bottom: 10px;
+    }
+
+    .guide-tab {
+      padding: 5px 10px;
+      background-color: #e9ecef;
+      border: none;
+      border-radius: 3px;
+      cursor: pointer;
+      font-size: 11px;
+      transition: all 0.2s;
+    }
+
+    .guide-tab.active {
+      background-color: #007bff;
+      color: white;
+    }
+
+    .guide-tab:hover {
+      background-color: #007bff;
+      color: white;
+    }
+
+    .guide-content-tab {
+      display: none;
+    }
+
+    .guide-content-tab.active {
+      display: block;
+    }
+
+    .quick-start {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 12px;
+      border-radius: 5px;
+      margin-bottom: 15px;
+    }
+
+    .quick-start h4 {
+      margin: 0 0 8px 0;
+      color: white;
+    }
+
+    .quick-start .guide-example {
+      background-color: rgba(255, 255, 255, 0.95);
+      color: #333;
+      border-left: 3px solid white;
+    }
+
+    .quick-start .guide-example::before {
+      color: #666;
+    }
+
+    /* Submission Form Styles */
+    .submit-form {
+      display: grid;
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .form-group label {
+      font-weight: bold;
+      font-size: 14px;
+      color: #333;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      padding: 8px 12px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 14px;
+      font-family: inherit;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      outline: none;
+      border-color: #007bff;
+      box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+    }
+
+    .import-section {
+      border: 2px dashed #ddd;
+      border-radius: 8px;
+      padding: 20px;
+      text-align: center;
+      background-color: #f9f9f9;
+      transition: all 0.3s ease;
+    }
+
+    .import-section:hover {
+      border-color: #007bff;
+      background-color: #f0f8ff;
+    }
+
+    .import-section.dragover {
+      border-color: #007bff;
+      background-color: #e3f2fd;
+      transform: scale(1.02);
+    }
+
+    .file-input {
+      display: none;
+    }
+
+    .file-input-label {
+      display: inline-block;
+      padding: 8px 16px;
+      background-color: #007bff;
+      color: white;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: background-color 0.3s;
+    }
+
+    .file-input-label:hover {
+      background-color: #0056b3;
+    }
+
+    .current-design-preview {
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 15px;
+      background-color: #f9f9f9;
+      max-height: 200px;
+      overflow-y: auto;
+    }
+
+    .current-design-preview h4 {
+      margin: 0 0 10px 0;
+      color: #333;
+      font-size: 14px;
+    }
+
+    .design-preview-area {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 120px;
+      background-image: 
+        linear-gradient(45deg, #f0f0f0 25%, transparent 25%),
+        linear-gradient(-45deg, #f0f0f0 25%, transparent 25%),
+        linear-gradient(45deg, transparent 75%, #f0f0f0 75%),
+        linear-gradient(-45deg, transparent 75%, #f0f0f0 75%);
+      background-size: 10px 10px;
+      background-position: 0 0, 0 5px, 5px -5px, -5px 0px;
+    }
+
+    .design-preview-area svg {
+      max-width: 100%;
+      max-height: 100%;
+    }
+
+    .submit-actions {
+      display: flex;
+      gap: 10px;
+      justify-content: flex-end;
+      padding-top: 15px;
+      border-top: 1px solid #eee;
+    }
+
+    .btn {
+      padding: 8px 16px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: background-color 0.3s;
+    }
+
+    .btn-primary {
+      background-color: #007bff;
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background-color: #0056b3;
+    }
+
+    .btn-secondary {
+      background-color: #6c757d;
+      color: white;
+    }
+
+    .btn-secondary:hover {
+      background-color: #545b62;
+    }
+
+    .success-message {
+      padding: 15px;
+      background-color: #d4edda;
+      border: 1px solid #c3e6cb;
+      border-radius: 4px;
+      color: #155724;
+      margin-bottom: 15px;
+    }
+
+    .error-message {
+      padding: 15px;
+      background-color: #f8d7da;
+      border: 1px solid #f5c6cb;
+      border-radius: 4px;
+      color: #721c24;
+      margin-bottom: 15px;
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="header-content">
+      <div class="logo"><img src="/favicon" style="height: 1rem" alt="Logo">Issued SVG Editor</div>
+    </div>
+  </header>
+
+  <div class="container">
+    <div class="editor">
+      <div class="editor-container">
+        <textarea id="codeEditor"></textarea>
+        <div id="errorOverlay" class="error-overlay"></div>
+      </div>
+      <div id="errorInfo" class="error-info" style="display: none;"></div>
+      <div id="clipboardStatus" class="clipboard-status">
+        📋 Internal Clipboard: <span id="clipboardContent">Empty</span>
+      </div>
+    </div>
+
+    <div class="preview">
+      <div class="preview-area">
+        <div id="livePreview"></div>
+      </div>
+      
+      <div class="guide-section">
+        <h3>🎨 Guide</h3>
+        
+        <div class="quick-start">
+          <h4>⚡ Quick Start</h4>
+          <div class="guide-example" onclick="insertTemplate('basic')">&lt;svg width="200" height="200" xmlns="http://www.w3.org/2000/svg"&gt;
+  &lt;circle cx="100" cy="100" r="50" fill="red" /&gt;
+&lt;/svg&gt;</div>
+        </div>
+
+        <div class="guide-tabs">
+          <button class="guide-tab active" onclick="showTab('shapes')">🔷 Shapes</button>
+          <button class="guide-tab" onclick="showTab('styling')">🎨 Styling</button>
+          <button class="guide-tab" onclick="showTab('paths')">📍 Paths</button>
+          <button class="guide-tab" onclick="showTab('text')">📝 Text & Groups</button>
+          <button class="guide-tab" onclick="showTab('multiline')">📝 Multi-line</button>
+        </div>
+
+        <div class="guide-content">
+          
+          <div id="shapes-tab" class="guide-content-tab active">
+            <div class="guide-category">
+              <h4>🔴 Circle</h4>
+              <p><code>cx, cy</code> = center position • <code>r</code> = radius</p>
+              <div class="guide-example" onclick="insertTemplate('circle')">&lt;circle cx="100" cy="100" r="40" fill="blue" /&gt;</div>
+            </div>
+
+            <div class="guide-category">
+              <h4>⬛ Rectangle</h4>
+              <p><code>x, y</code> = top-left corner • <code>width, height</code> = size</p>
+              <div class="guide-example" onclick="insertTemplate('rect')">&lt;rect x="50" y="50" width="100" height="80" fill="green" /&gt;</div>
+            </div>
+
+            <div class="guide-category">
+              <h4>📏 Line</h4>
+              <p><code>x1, y1</code> = start point • <code>x2, y2</code> = end point</p>
+              <div class="guide-example" onclick="insertTemplate('line')">&lt;line x1="10" y1="10" x2="190" y2="190" stroke="black" stroke-width="2" /&gt;</div>
+            </div>
+
+            <div class="guide-category">
+              <h4>🥚 Ellipse</h4>
+              <p><code>cx, cy</code> = center • <code>rx, ry</code> = horizontal/vertical radius</p>
+              <div class="guide-example" onclick="insertTemplate('ellipse')">&lt;ellipse cx="100" cy="100" rx="60" ry="30" fill="purple" /&gt;</div>
+            </div>
+          </div>
+
+          <!-- Styling Tab -->
+          <div id="styling-tab" class="guide-content-tab">
+            <div class="guide-category">
+              <h4>🎨 Colors & Fills</h4>
+              <div class="guide-example" onclick="insertTemplate('colors')">&lt;circle cx="100" cy="100" r="40" fill="red" stroke="blue" stroke-width="3" /&gt;</div>
+              <p><code>fill</code> = interior color • <code>stroke</code> = border color • <code>stroke-width</code> = border thickness</p>
+            </div>
+
+            <div class="guide-category">
+              <h4>👻 Transparency</h4>
+              <div class="guide-example" onclick="insertTemplate('opacity')">&lt;circle cx="80" cy="80" r="40" fill="red" opacity="0.5" /&gt;
+&lt;circle cx="120" cy="120" r="40" fill="blue" opacity="0.7" /&gt;</div>
+              <p><code>opacity</code> = transparency (0 = invisible, 1 = solid)</p>
+            </div>
+
+            <div class="guide-category">
+              <h4>🌈 Gradients</h4>
+              <div class="guide-example" onclick="insertTemplate('gradient')">&lt;defs&gt;
+  &lt;linearGradient id="grad1"&gt;
+    &lt;stop offset="0%" stop-color="red" /&gt;
+    &lt;stop offset="100%" stop-color="blue" /&gt;
+  &lt;/linearGradient&gt;
+&lt;/defs&gt;
+&lt;circle cx="100" cy="100" r="50" fill="url(#grad1)" /&gt;</div>
+            </div>
+          </div>
+
+          <!-- Paths Tab -->
+          <div id="paths-tab" class="guide-content-tab">
+            <div class="guide-category">
+              <h4>📍 Basic Path</h4>
+              <p><code>M</code> = Move to • <code>L</code> = Line to • <code>Z</code> = Close path</p>
+              <div class="guide-example" onclick="insertTemplate('path-basic')">&lt;path d="M 50 50 L 150 50 L 100 150 Z" fill="orange" /&gt;</div>
+            </div>
+
+            <div class="guide-category">
+              <h4>🌊 Curves</h4>
+              <p><code>Q</code> = Quadratic curve • <code>C</code> = Cubic curve</p>
+              <div class="guide-example" onclick="insertTemplate('path-curve')">&lt;path d="M 50 100 Q 100 50 150 100" stroke="red" stroke-width="3" fill="none" /&gt;</div>
+            </div>
+
+            <div class="guide-category">
+              <h4>⭐ Star Shape</h4>
+              <div class="guide-example" onclick="insertTemplate('star')">&lt;path d="M 100 20 L 110 80 L 160 80 L 120 120 L 130 180 L 100 150 L 70 180 L 80 120 L 40 80 L 90 80 Z" fill="gold" /&gt;</div>
+            </div>
+          </div>
+
+          <!-- Text & Groups Tab -->
+          <div id="text-tab" class="guide-content-tab">
+            <div class="guide-category">
+              <h4>📝 Text</h4>
+              <p><code>x, y</code> = position • <code>font-family, font-size</code> = styling</p>
+              <div class="guide-example" onclick="insertTemplate('text')">&lt;text x="100" y="100" font-family="Arial" font-size="20" text-anchor="middle" fill="black"&gt;Hello SVG!&lt;/text&gt;</div>
+            </div>
+
+            <div class="guide-category">
+              <h4>👥 Groups</h4>
+              <p><code>g</code> = group elements • <code>transform</code> = move, rotate, scale</p>
+              <div class="guide-example" onclick="insertTemplate('group')">&lt;g transform="translate(100,100) rotate(45)"&gt;
+  &lt;rect x="-25" y="-25" width="50" height="50" fill="red" /&gt;
+  &lt;circle r="10" fill="white" /&gt;
+&lt;/g&gt;</div>
+            </div>
+
+            <div class="guide-category">
+              <h4>🔄 Transforms</h4>
+              <p><code>translate(x,y)</code> • <code>rotate(angle)</code> • <code>scale(factor)</code></p>
+              <div class="guide-example" onclick="insertTemplate('transform')">&lt;rect x="50" y="50" width="40" height="40" fill="blue" transform="rotate(30 70 70)" /&gt;</div>
+            </div>
+          </div>
+
+          <!-- Multi-line Tab -->
+          <div id="multiline-tab" class="guide-content-tab">
+            <div class="guide-category">
+              <h4>📝 Multi-line Rectangle</h4>
+              <p>Break attributes across multiple lines for better readability</p>
+              <div class="guide-example" onclick="insertTemplate('multiline-rect')">&lt;rect
+  x="50"
+  y="50"
+  width="100"
+  height="80"
+  fill="green"
+  stroke="darkgreen"
+  stroke-width="2"
+/&gt;</div>
+            </div>
+
+            <div class="guide-category">
+              <h4>🔵 Multi-line Circle</h4>
+              <p>Each attribute on its own line with proper indentation</p>
+              <div class="guide-example" onclick="insertTemplate('multiline-circle')">&lt;circle
+  cx="100"
+  cy="100"
+  r="60"
+  fill="lightblue"
+  stroke="blue"
+  stroke-width="3"
+  opacity="0.8"
+/&gt;</div>
+            </div>
+
+            <div class="guide-category">
+              <h4>📍 Multi-line Path</h4>
+              <p>Path data can be split across lines for complex shapes</p>
+              <div class="guide-example" onclick="insertTemplate('multiline-path')">&lt;path
+  d="M 50 50
+     L 150 50
+     L 150 150
+     L 50 150
+     Z"
+  fill="orange"
+  stroke="darkorange"
+  stroke-width="2"
+/&gt;</div>
+            </div>
+
+            <div class="guide-category">
+              <h4>🌈 Complex Multi-line</h4>
+              <p>Complex elements with gradients and multiple attributes</p>
+              <div class="guide-example" onclick="insertTemplate('multiline-complex')">&lt;linearGradient
+  id="complexGrad"
+  x1="0%" y1="0%"
+  x2="100%" y2="100%"
+&gt;
+  &lt;stop offset="0%" stop-color="red" /&gt;
+  &lt;stop offset="50%" stop-color="yellow" /&gt;
+  &lt;stop offset="100%" stop-color="blue" /&gt;
+&lt;/linearGradient&gt;</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Save Modal -->
+  <div id="saveModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>💾 Save SVG File</h2>
+        <span class="close" onclick="closeSaveModal()">&times;</span>
+      </div>
+      <div class="save-form">
+        <input type="text" id="saveFilename" placeholder="Enter filename..." />
+        <button onclick="saveFile()">Save</button>
+      </div>
+      <div id="saveMessage"></div>
+    </div>
+  </div>
+
+  <!-- Load Modal -->
+  <div id="loadModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>📁 Load SVG File</h2>
+        <span class="close" onclick="closeLoadModal()">&times;</span>
+      </div>
+      <div id="fileList" class="file-list">
+        <p>Loading your files...</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Submit Design Modal -->
+  <div id="submitModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>📋 Submit Design</h2>
+        <span class="close" onclick="closeSubmitModal()">&times;</span>
+      </div>
+      <div id="slackAuthStatus" style="background: #e8f5e8; border: 1px solid #28a745; border-radius: 8px; padding: 12px; margin-bottom: 20px; color: #155724; font-size: 14px;">
+        ✅ <strong>Authenticated with Slack</strong><br>
+        <span id="authUserInfo" style="font-size: 13px; opacity: 0.8;"></span>
+      </div>
+      <div id="submitMessage"></div>
+      <form class="submit-form" onsubmit="submitDesign(event)">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="firstName">First Name * <span style="font-size: 12px; color: #667eea;">(from Slack)</span></label>
+            <input type="text" id="firstName" name="firstName" required>
+          </div>
+          <div class="form-group">
+            <label for="surname">Surname * <span style="font-size: 12px; color: #667eea;">(from Slack)</span></label>
+            <input type="text" id="surname" name="surname" required>
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label for="email">Email Address * <span style="font-size: 12px; color: #667eea;">(editable)</span></label>
+          <input type="email" id="email" name="email" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="slackId">Slack ID <span style="font-size: 12px; color: #667eea;">(from Slack)</span></label>
+          <input type="text" id="slackId" name="slackId" placeholder="e.g., @username or user ID">
+        </div>
+
+        <div class="current-design-preview">
+          <h4>Design Preview:</h4>
+          <div class="design-preview-area" id="submitPreview">
+            <p style="color: #666;">No design to preview</p>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="designNotes">Additional Notes (Optional)</label>
+          <textarea id="designNotes" name="designNotes" rows="3" placeholder="Any additional information about your design..."></textarea>
+        </div>
+
+        <div class="submit-actions">
+          <button type="button" class="btn btn-secondary" onclick="closeSubmitModal()">Cancel</button>
+          <button type="submit" class="btn btn-primary">Submit Design</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    // Get references to the editor and preview elements
+    const codeEditor = document.getElementById('codeEditor');
+    const livePreview = document.getElementById('livePreview');
+    const errorOverlay = document.getElementById('errorOverlay');
+    const errorInfo = document.getElementById('errorInfo');
+
+    // Custom Alert System
+    function showAlert(message, type = 'info', duration = 5000) {
+      // Remove any existing alerts
+      const existingAlert = document.querySelector('.custom-alert');
+      if (existingAlert) {
+        existingAlert.remove();
+      }
+
+      // Create alert element
+      const alert = document.createElement('div');
+      alert.className = `custom-alert ${type}`;
+      
+      // Create icon based on type
+      let iconText = '';
+      switch (type) {
+        case 'success':
+          iconText = '✓';
+          break;
+        case 'error':
+          iconText = '✕';
+          break;
+        case 'warning':
+          iconText = '!';
+          break;
+        case 'info':
+        default:
+          iconText = 'i';
+          break;
+      }
+
+      alert.innerHTML = `
+        <div class="alert-icon ${type}">${iconText}</div>
+        <div class="alert-content">${message}</div>
+        <button class="alert-close" onclick="this.parentElement.remove()">×</button>
+      `;
+
+      // Add to body
+      document.body.appendChild(alert);
+
+      // Show with animation
+      setTimeout(() => {
+        alert.classList.add('show');
+      }, 10);
+
+      // Auto-remove after duration
+      if (duration > 0) {
+        setTimeout(() => {
+          if (alert.parentElement) {
+            alert.classList.remove('show');
+            setTimeout(() => {
+              if (alert.parentElement) {
+                alert.remove();
+              }
+            }, 300);
+          }
+        }, duration);
+      }
+    }
+
+    // Replace the default alert function
+    const originalAlert = window.alert;
+    window.alert = function(message) {
+      // Try to determine the type based on message content
+      let type = 'info';
+      const lowerMessage = message.toLowerCase();
+      
+      if (lowerMessage.includes('success') || lowerMessage.includes('saved') || lowerMessage.includes('copied') || lowerMessage.includes('complete')) {
+        type = 'success';
+      } else if (lowerMessage.includes('error') || lowerMessage.includes('fail') || lowerMessage.includes('invalid') || lowerMessage.includes('cannot') || lowerMessage.includes('unable')) {
+        type = 'error';
+      } else if (lowerMessage.includes('warning') || lowerMessage.includes('please') || lowerMessage.includes('must') || lowerMessage.includes('required')) {
+        type = 'warning';
+      }
+      
+      showAlert(message, type);
+    };
+
+    // Function to update the live preview with error handling
+    function updatePreview() {
+      let svgCode = codeEditor.value.trim();
+      
+      // If textarea is empty, use default SVG structure
+      if (!svgCode) {
+        svgCode = '<svg width="200" height="200" xmlns="http://www.w3.org/2000/svg"></svg>';
+      }
+      
+      const lines = codeEditor.value.split('\n'); // Use actual textarea content for line analysis
+      
+      // Clear previous errors
+      errorOverlay.innerHTML = '';
+      errorInfo.style.display = 'none';
+      errorInfo.innerHTML = '';
+
+      // Clear the current preview
+      livePreview.innerHTML = '';
+
+      try {
+        // First, try to parse the entire SVG
+        const parser = new DOMParser();
+        const svgDoc = parser.parseFromString(svgCode, 'image/svg+xml');
+        
+        // Check for parsing errors
+        const parserErrors = svgDoc.getElementsByTagName('parsererror');
+        if (parserErrors.length > 0) {
+          // If there are errors, try to fix them line by line
+          const { cleanedSvg, errorLines, errorMessages } = fixSvgErrors(svgCode);
+          
+          // Highlight error lines
+          highlightErrorLines(lines, errorLines);
+          
+          // Show error information
+          if (errorMessages.length > 0) {
+            errorInfo.innerHTML = '<strong>Issues found:</strong><br>' + errorMessages.join('<br>');
+            errorInfo.style.display = 'block';
+          }
+          
+          // Try to render the cleaned SVG
+          if (cleanedSvg.trim()) {
+            const cleanedDoc = parser.parseFromString(cleanedSvg, 'image/svg+xml');
+            const cleanedErrors = cleanedDoc.getElementsByTagName('parsererror');
+            
+            if (cleanedErrors.length === 0) {
+              const svgElement = cleanedDoc.documentElement;
+              livePreview.appendChild(svgElement);
+            } else {
+              livePreview.innerHTML = '<p style="color: red;">Unable to render SVG due to syntax errors</p>';
+            }
+          } else {
+            livePreview.innerHTML = '<p style="color: orange;">No valid SVG content found</p>';
+          }
+        } else {
+          // No errors, render normally
+          const svgElement = svgDoc.documentElement;
+          livePreview.appendChild(svgElement);
+        }
+      } catch (error) {
+        // Display an error message in the preview
+        livePreview.innerHTML = `<p style="color: red;">Error: ${error.message}</p>`;
+        errorInfo.innerHTML = `<strong>Parse Error:</strong> ${error.message}`;
+        errorInfo.style.display = 'block';
+      }
+    }
+
+    // Function to attempt fixing SVG errors by removing problematic lines
+    function fixSvgErrors(svgCode) {
+      const lines = svgCode.split('\n');
+      const cleanedLines = [];
+      const errorLines = [];
+      const errorMessages = [];
+      
+      // First, let's try to parse the entire SVG to see if it's valid
+      try {
+        const parser = new DOMParser();
+        const svgDoc = parser.parseFromString(svgCode, 'image/svg+xml');
+        const parserErrors = svgDoc.getElementsByTagName('parsererror');
+        
+        if (parserErrors.length === 0) {
+          // SVG is valid, return as-is
+          return {
+            cleanedSvg: svgCode,
+            errorLines: [],
+            errorMessages: []
+          };
+        }
+      } catch (e) {
+        // Continue with line-by-line analysis
+      }
+      
+      // Track multi-line elements
+      let inMultiLineElement = false;
+      let currentElementLines = [];
+      let currentElementStartLine = -1;
+      
+      for (let i = 0; i < lines.length; i++) {
+        const line = lines[i];
+        const trimmedLine = line.trim();
+        
+        // Skip empty lines
+        if (!trimmedLine) {
+          cleanedLines.push(lines[i]);
+          continue;
+        }
+        
+        // Check if this line starts a new element
+        const startsElement = trimmedLine.match(/^<(\w+)(?:\s|$)/);
+        const endsElement = trimmedLine.includes('/>') || trimmedLine.includes('</');
+        
+        if (startsElement && !endsElement) {
+          // Starting a multi-line element
+          inMultiLineElement = true;
+          currentElementLines = [line];
+          currentElementStartLine = i;
+        } else if (inMultiLineElement) {
+          // Continuing or ending a multi-line element
+          currentElementLines.push(line);
+          
+          if (endsElement || trimmedLine.includes('/>')) {
+            // Element is complete, validate it
+            const elementCode = currentElementLines.join('\n');
+            const isValid = validateSVGElement(elementCode);
+            
+            if (isValid) {
+              cleanedLines.push(...currentElementLines);
+            } else {
+              // Mark all lines of this element as errors
+              for (let j = currentElementStartLine; j <= i; j++) {
+                errorLines.push(j);
+              }
+              errorMessages.push(`Lines ${currentElementStartLine + 1}-${i + 1}: Invalid multi-line element`);
+            }
+            
+            inMultiLineElement = false;
+            currentElementLines = [];
+            currentElementStartLine = -1;
+          }
+        } else {
+          // Single-line element or other content
+          let hasError = false;
+          let errorMessage = '';
+          
+          // Check for common SVG errors on single lines
+          if (trimmedLine.includes('<') && !trimmedLine.includes('>')) {
+            hasError = true;
+            errorMessage = `Line ${i + 1}: Unclosed tag`;
+          } else if (trimmedLine.includes('>') && !trimmedLine.includes('<') && !trimmedLine.match(/^\s*\w+/)) {
+            hasError = true;
+            errorMessage = `Line ${i + 1}: Unexpected closing bracket`;
+          } else if (trimmedLine.match(/<(\w+)[^>]*$/) && !trimmedLine.includes('/>')) {
+            // This might be the start of a multi-line element that we missed
+            const tagName = trimmedLine.match(/<(\w+)/)?.[1];
+            if (tagName && !['svg', 'g', 'defs', 'clipPath', 'mask', 'pattern', 'marker', 'symbol', 'foreignObject'].includes(tagName)) {
+              hasError = true;
+              errorMessage = `Line ${i + 1}: Incomplete element opening`;
+            }
+          }
+          
+          // Check for malformed attributes (more lenient for multi-line)
+          if (trimmedLine.includes('=')) {
+            // Only check for obviously malformed attributes
+            const badAttr = trimmedLine.match(/(\w+\s*=\s*[^"'\s>=][^\s>]*(?:\s|>))/);
+            if (badAttr && !trimmedLine.includes('"') && !trimmedLine.includes("'")) {
+              hasError = true;
+              errorMessage = `Line ${i + 1}: Unquoted attribute value '${badAttr[1]}'`;
+            }
+          }
+          
+          if (hasError) {
+            errorLines.push(i);
+            errorMessages.push(errorMessage);
+          } else {
+            cleanedLines.push(lines[i]);
+          }
+        }
+      }
+      
+      // Handle case where we're still in a multi-line element at the end
+      if (inMultiLineElement) {
+        for (let j = currentElementStartLine; j < lines.length; j++) {
+          errorLines.push(j);
+        }
+        errorMessages.push(`Lines ${currentElementStartLine + 1}-${lines.length}: Incomplete multi-line element`);
+      }
+      
+      return {
+        cleanedSvg: cleanedLines.join('\n'),
+        errorLines,
+        errorMessages
+      };
+    }
+
+    // Helper function to validate a complete SVG element
+    function validateSVGElement(elementCode) {
+      try {
+        // Wrap in a temporary SVG container for validation
+        const testSvg = `<svg xmlns="http://www.w3.org/2000/svg">${elementCode}</svg>`;
+        const parser = new DOMParser();
+        const svgDoc = parser.parseFromString(testSvg, 'image/svg+xml');
+        const parserErrors = svgDoc.getElementsByTagName('parsererror');
+        return parserErrors.length === 0;
+      } catch (e) {
+        return false;
+      }
+    }
+
+    // Function to highlight error lines in the overlay
+    function highlightErrorLines(lines, errorLineNumbers) {
+      // Always update overlay with current textarea content
+      const currentLines = codeEditor.value.split('\n');
+      
+      const overlayContent = currentLines.map((line, index) => {
+        if (errorLineNumbers.includes(index)) {
+          return `<span class="error-line">${line.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</span>`;
+        }
+        return line.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+      }).join('\n');
+      
+      errorOverlay.innerHTML = overlayContent;
+    }
+
+    // Handle tab key for indentation
+    codeEditor.addEventListener('keydown', function(e) {
+      if (e.key === 'Tab') {
+        e.preventDefault();
+        
+        const start = this.selectionStart;
+        const end = this.selectionEnd;
+        
+        // Insert tab character (or spaces)
+        const tabChar = '  '; // Use 2 spaces for indentation
+        this.value = this.value.substring(0, start) + tabChar + this.value.substring(end);
+        
+        // Move cursor to the right position
+        this.selectionStart = this.selectionEnd = start + tabChar.length;
+      }
+    });
+
+    // Update the preview when the editor content changes
+    codeEditor.addEventListener('input', updatePreview);
+
+    // Synchronize overlay scroll with textarea scroll
+    codeEditor.addEventListener('scroll', function() {
+      errorOverlay.scrollTop = this.scrollTop;
+      errorOverlay.scrollLeft = this.scrollLeft;
+    });
+
+    // Also update overlay when content changes to ensure alignment
+    codeEditor.addEventListener('input', function() {
+      // Small delay to ensure textarea has updated
+      setTimeout(() => {
+        errorOverlay.scrollTop = this.scrollTop;
+        errorOverlay.scrollLeft = this.scrollLeft;
+      }, 0);
+    });
+
+    // Internal Clipboard System
+    let internalClipboard = '';
+    
+    // Function to update clipboard status display
+    function updateClipboardStatus() {
+      const statusElement = document.getElementById('clipboardContent');
+      if (internalClipboard) {
+        const preview = internalClipboard.length > 50 ? 
+          internalClipboard.substring(0, 47) + '...' : 
+          internalClipboard;
+        statusElement.textContent = `"${preview}" (${internalClipboard.length} chars)`;
+      } else {
+        statusElement.textContent = 'Empty';
+      }
+    }
+    
+    // Override default copy/paste behavior
+    codeEditor.addEventListener('keydown', function(e) {
+      // Handle Ctrl+C (Copy)
+      if ((e.ctrlKey || e.metaKey) && e.key === 'c') {
+        e.preventDefault();
+        const start = this.selectionStart;
+        const end = this.selectionEnd;
+        
+        if (start !== end) {
+          // Copy selected text to internal clipboard
+          internalClipboard = this.value.substring(start, end);
+          updateClipboardStatus();
+          showAlert('Text copied to internal clipboard', 'success', 2000);
+        } else {
+          showAlert('No text selected to copy', 'warning', 2000);
+        }
+        return false;
+      }
+      
+      // Handle Ctrl+X (Cut)
+      if ((e.ctrlKey || e.metaKey) && e.key === 'x') {
+        e.preventDefault();
+        const start = this.selectionStart;
+        const end = this.selectionEnd;
+        
+        if (start !== end) {
+          // Copy selected text to internal clipboard
+          internalClipboard = this.value.substring(start, end);
+          
+          // Remove selected text
+          this.value = this.value.substring(0, start) + this.value.substring(end);
+          this.selectionStart = this.selectionEnd = start;
+          
+          // Update preview after cut
+          updatePreview();
+          updateClipboardStatus();
+          showAlert('Text cut to internal clipboard', 'success', 2000);
+        } else {
+          showAlert('No text selected to cut', 'warning', 2000);
+        }
+        return false;
+      }
+      
+      // Handle Ctrl+V (Paste)
+      if ((e.ctrlKey || e.metaKey) && e.key === 'v') {
+        e.preventDefault();
+        
+        if (internalClipboard) {
+          const start = this.selectionStart;
+          const end = this.selectionEnd;
+          
+          // Insert clipboard content at cursor position
+          this.value = this.value.substring(0, start) + internalClipboard + this.value.substring(end);
+          
+          // Move cursor to end of pasted text
+          const newPosition = start + internalClipboard.length;
+          this.selectionStart = this.selectionEnd = newPosition;
+          
+          // Update preview after paste
+          updatePreview();
+          showAlert('Text pasted from internal clipboard', 'success', 2000);
+        } else {
+          showAlert('Internal clipboard is empty', 'warning', 2000);
+        }
+        return false;
+      }
+      
+      // Handle Ctrl+A (Select All) - allow this to work normally
+      if ((e.ctrlKey || e.metaKey) && e.key === 'a') {
+        // Let default behavior handle select all
+        return true;
+      }
+    });
+
+    // Prevent paste from external clipboard
+    codeEditor.addEventListener('paste', function(e) {
+      e.preventDefault();
+      showAlert('External paste blocked. Use internal copy/paste only (Ctrl+C, Ctrl+V)', 'warning', 3000);
+      return false;
+    });
+
+    // Prevent copy to external clipboard (in addition to keydown handler)
+    codeEditor.addEventListener('copy', function(e) {
+      e.preventDefault();
+      showAlert('External copy blocked. Use internal copy/paste only (Ctrl+C, Ctrl+V)', 'warning', 3000);
+      return false;
+    });
+
+    // Prevent cut to external clipboard (in addition to keydown handler)
+    codeEditor.addEventListener('cut', function(e) {
+      e.preventDefault();
+      showAlert('External cut blocked. Use internal copy/paste only (Ctrl+X, Ctrl+V)', 'warning', 3000);
+      return false;
+    });
+
+    // Prevent right-click context menu to avoid copy/paste options
+    codeEditor.addEventListener('contextmenu', function(e) {
+      e.preventDefault();
+      showAlert('Right-click menu disabled. Use keyboard shortcuts: Ctrl+C (copy), Ctrl+X (cut), Ctrl+V (paste)', 'info', 3000);
+      return false;
+    });
+
+    // Prevent drag and drop from external sources
+    codeEditor.addEventListener('dragover', function(e) {
+      e.preventDefault();
+      return false;
+    });
+
+    codeEditor.addEventListener('drop', function(e) {
+      e.preventDefault();
+      showAlert('External drag and drop blocked. Use internal copy/paste only.', 'warning', 3000);
+      return false;
+    });
+
+    // Navbar functions
+    function clearEditor() {
+      codeEditor.value = '';
+      updatePreview();
+    }
+
+    function copyToClipboard() {
+      // Copy entire editor content to internal clipboard
+      internalClipboard = codeEditor.value;
+      updateClipboardStatus();
+      alert('SVG code copied to internal clipboard!');
+    }
+
+    function downloadSVG() {
+      const svgContent = codeEditor.value;
+      const blob = new Blob([svgContent], { type: 'image/svg+xml' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'generated.svg';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+
+    function formatSVG() {
+      const svgContent = codeEditor.value.trim();
+      if (!svgContent) {
+        alert('No SVG content to format!');
+        return;
+      }
+
+      try {
+        // Parse and format the SVG
+        const formatted = formatSVGCode(svgContent);
+        codeEditor.value = formatted;
+        updatePreview();
+        
+        // Show success message briefly
+        const originalTitle = document.title;
+        document.title = '✨ SVG Formatted!';
+        setTimeout(() => {
+          document.title = originalTitle;
+        }, 2000);
+      } catch (error) {
+        alert('Error formatting SVG: ' + error.message);
+      }
+    }
+
+    // Helper function to format SVG code with proper indentation
+    function formatSVGCode(svgCode) {
+      try {
+        // Parse the SVG to validate it
+        const parser = new DOMParser();
+        const svgDoc = parser.parseFromString(svgCode, 'image/svg+xml');
+        const parserErrors = svgDoc.getElementsByTagName('parsererror');
+        
+        if (parserErrors.length > 0) {
+          throw new Error('Invalid SVG syntax');
+        }
+
+        // Format the SVG using a simple but effective approach
+        let formatted = svgCode
+          .replace(/>\s*</g, '>\n<') // Add newlines between tags
+          .replace(/^\s+/gm, '') // Remove existing indentation
+          .split('\n')
+          .filter(line => line.trim()) // Remove empty lines
+          .map(line => line.trim()) // Trim each line
+          .join('\n');
+
+        // Add proper indentation
+        const lines = formatted.split('\n');
+        let indentLevel = 0;
+        const indentSize = 2;
+        const formattedLines = [];
+
+        for (let i = 0; i < lines.length; i++) {
+          const line = lines[i];
+          
+          // Decrease indent for closing tags
+          if (line.startsWith('</') || line.includes('</')) {
+            indentLevel = Math.max(0, indentLevel - 1);
+          }
+          
+          // Add indentation
+          const indent = ' '.repeat(indentLevel * indentSize);
+          formattedLines.push(indent + line);
+          
+          // Increase indent for opening tags (but not self-closing or closing tags)
+          if (line.includes('<') && !line.includes('</') && !line.endsWith('/>') && !line.includes('<?')) {
+            // Check if this is a complete tag with attributes that might be on multiple lines
+            if (line.includes('>')) {
+              indentLevel++;
+            }
+          }
+        }
+
+        return formattedLines.join('\n');
+      } catch (error) {
+        // If parsing fails, do basic formatting
+        return svgCode
+          .replace(/>\s*</g, '>\n<')
+          .replace(/^\s+/gm, '')
+          .split('\n')
+          .filter(line => line.trim())
+          .map((line, index) => {
+            const trimmed = line.trim();
+            const indent = trimmed.startsWith('</') ? '  ' : 
+                          trimmed.startsWith('<') ? (index === 0 ? '' : '  ') : '    ';
+            return indent + trimmed;
+          })
+          .join('\n');
+      }
+    }
+
+    // Guide functionality
+    function showTab(tabName) {
+      // Hide all tabs
+      document.querySelectorAll('.guide-content-tab').forEach(tab => {
+        tab.classList.remove('active');
+      });
+      document.querySelectorAll('.guide-tab').forEach(tab => {
+        tab.classList.remove('active');
+      });
+      
+      // Show selected tab
+      document.getElementById(tabName + '-tab').classList.add('active');
+      event.target.classList.add('active');
+    }
+
+    function insertTemplate(type) {
+      const templates = {
+        basic: '<svg width="200" height="200" xmlns="http://www.w3.org/2000/svg">\n  <circle cx="100" cy="100" r="50" fill="red" />\n</svg>',
+        circle: '<svg width="200" height="200" xmlns="http://www.w3.org/2000/svg">\n  <circle cx="100" cy="100" r="40" fill="blue" />\n</svg>',
+        rect: '<svg width="200" height="200" xmlns="http://www.w3.org/2000/svg">\n  <rect x="50" y="50" width="100" height="80" fill="green" />\n</svg>',
+        line: '<svg width="200" height="200" xmlns="http://www.w3.org/2000/svg">\n  <line x1="10" y1="10" x2="190" y2="190" stroke="black" stroke-width="2" />\n</svg>',
+        ellipse: '<svg width="200" height="200" xmlns="http://www.w3.org/2000/svg">\n  <ellipse cx="100" cy="100" rx="60" ry="30" fill="purple" />\n</svg>',
+        colors: '<svg width="200" height="200" xmlns="http://www.w3.org/2000/svg">\n  <circle cx="100" cy="100" r="40" fill="red" stroke="blue" stroke-width="3" />\n</svg>',
+        opacity: '<svg width="200" height="200" xmlns="http://www.w3.org/2000/svg">\n  <circle cx="80" cy="80" r="40" fill="red" opacity="0.5" />\n  <circle cx="120" cy="120" r="40" fill="blue" opacity="0.7" />\n</svg>',
+        gradient: '<svg width="200" height="200" xmlns="http://www.w3.org/2000/svg">\n  <defs>\n    <linearGradient id="grad1">\n      <stop offset="0%" stop-color="red" />\n      <stop offset="100%" stop-color="blue" />\n    </linearGradient>\n  </defs>\n  <circle cx="100" cy="100" r="50" fill="url(#grad1)" />\n</svg>',
+        'path-basic': '<svg width="200" height="200" xmlns="http://www.w3.org/2000/svg">\n  <path d="M 50 50 L 150 50 L 100 150 Z" fill="orange" />\n</svg>',
+        'path-curve': '<svg width="200" height="200" xmlns="http://www.w3.org/2000/svg">\n  <path d="M 50 100 Q 100 50 150 100" stroke="red" stroke-width="3" fill="none" />\n</svg>',
+        star: '<svg width="200" height="200" xmlns="http://www.w3.org/2000/svg">\n  <path d="M 100 20 L 110 80 L 160 80 L 120 120 L 130 180 L 100 150 L 70 180 L 80 120 L 40 80 L 90 80 Z" fill="gold" />\n</svg>',
+        text: '<svg width="200" height="200" xmlns="http://www.w3.org/2000/svg">\n  <text x="100" y="100" font-family="Arial" font-size="20" text-anchor="middle" fill="black">Hello SVG!</text>\n</svg>',
+        group: '<svg width="200" height="200" xmlns="http://www.w3.org/2000/svg">\n  <g transform="translate(100,100) rotate(45)">\n    <rect x="-25" y="-25" width="50" height="50" fill="red" />\n    <circle r="10" fill="white" />\n  </g>\n</svg>',
+        transform: '<svg width="200" height="200" xmlns="http://www.w3.org/2000/svg">\n  <rect x="50" y="50" width="40" height="40" fill="blue" transform="rotate(30 70 70)" />\n</svg>',
+        'multiline-rect': '<svg width="200" height="200" xmlns="http://www.w3.org/2000/svg">\n  <rect\n    x="50"\n    y="50"\n    width="100"\n    height="80"\n    fill="green"\n    stroke="darkgreen"\n    stroke-width="2"\n  />\n</svg>',
+        'multiline-circle': '<svg width="200" height="200" xmlns="http://www.w3.org/2000/svg">\n  <circle\n    cx="100"\n    cy="100"\n    r="60"\n    fill="lightblue"\n    stroke="blue"\n    stroke-width="3"\n    opacity="0.8"\n  />\n</svg>',
+        'multiline-path': '<svg width="200" height="200" xmlns="http://www.w3.org/2000/svg">\n  <path\n    d="M 50 50\n       L 150 50\n       L 150 150\n       L 50 150\n       Z"\n    fill="orange"\n    stroke="darkorange"\n    stroke-width="2"\n  />\n</svg>',
+        'multiline-complex': '<svg width="200" height="200" xmlns="http://www.w3.org/2000/svg">\n  <defs>\n    <linearGradient\n      id="complexGrad"\n      x1="0%"\n      y1="0%"\n      x2="100%"\n      y2="100%"\n    >\n      <stop\n        offset="0%"\n        stop-color="red"\n        stop-opacity="1"\n      />\n      <stop\n        offset="50%"\n        stop-color="yellow"\n        stop-opacity="0.8"\n      />\n      <stop\n        offset="100%"\n        stop-color="blue"\n        stop-opacity="1"\n      />\n    </linearGradient>\n  </defs>\n  <rect\n    x="20"\n    y="20"\n    width="160"\n    height="160"\n    fill="url(#complexGrad)"\n    rx="10"\n    ry="10"\n  />\n</svg>'
+      };
+      
+      if (templates[type]) {
+        codeEditor.value = templates[type];
+        updatePreview();
+        codeEditor.focus();
+      }
+    }
+
+    // Initialize the preview
+    updatePreview();
+
+    // Check authentication status on page load
+    checkAuthStatus();
+
+    // Authentication functions
+    async function checkAuthStatus() {
+      try {
+        const response = await fetch('/auth/status');
+        const data = await response.json();
+        
+        if (data.authenticated && data.user) {
+          showUserInfo(data.user);
+        } else {
+          showLoginButton();
+        }
+      } catch (error) {
+        console.error('Error checking auth status:', error);
+        showLoginButton();
+      }
+    }
+
+    function showUserInfo(user) {
+      // Store user data globally for use in forms
+      window.currentUser = user;
+      
+      document.getElementById('loginBtn').style.display = 'none';
+      document.getElementById('userInfo').style.display = 'flex';
+      document.getElementById('userName').textContent = user.name;
+      document.getElementById('userAvatar').src = user.image || '';
+      document.getElementById('saveBtn').style.display = 'block';
+      document.getElementById('loadBtn').style.display = 'block';
+    }
+
+    function showLoginButton() {
+      // Clear user data
+      window.currentUser = null;
+      
+      document.getElementById('loginBtn').style.display = 'block';
+      document.getElementById('userInfo').style.display = 'none';
+      document.getElementById('saveBtn').style.display = 'none';
+      document.getElementById('loadBtn').style.display = 'none';
+    }
+
+    function loginWithSlack() {
+      window.location.href = '/auth/slack';
+    }
+
+    async function logout() {
+      try {
+        await fetch('/api/logout', { method: 'POST' });
+        showLoginButton();
+      } catch (error) {
+        console.error('Logout error:', error);
+      }
+    }
+
+    // File management functions
+    function showSaveModal() {
+      document.getElementById('saveModal').style.display = 'block';
+      document.getElementById('saveFilename').focus();
+    }
+
+    function closeSaveModal() {
+      document.getElementById('saveModal').style.display = 'none';
+      document.getElementById('saveMessage').innerHTML = '';
+    }
+
+    async function saveFile() {
+      const filename = document.getElementById('saveFilename').value.trim();
+      const content = codeEditor.value.trim();
+      
+      if (!filename) {
+        document.getElementById('saveMessage').innerHTML = '<p style="color: red;">Please enter a filename.</p>';
+        return;
+      }
+      
+      if (!content) {
+        document.getElementById('saveMessage').innerHTML = '<p style="color: red;">Cannot save empty SVG.</p>';
+        return;
+      }
+
+      try {
+        const response = await fetch('/api/svg/save', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ filename, content })
+        });
+
+        const data = await response.json();
+        
+        if (response.ok) {
+          document.getElementById('saveMessage').innerHTML = '<p style="color: green;">✅ File saved successfully!</p>';
+          setTimeout(closeSaveModal, 1500);
+        } else {
+          document.getElementById('saveMessage').innerHTML = `<p style="color: red;">❌ ${data.error}</p>`;
+        }
+      } catch (error) {
+        console.error('Save error:', error);
+        document.getElementById('saveMessage').innerHTML = '<p style="color: red;">❌ Network error occurred.</p>';
+      }
+    }
+
+    function showLoadModal() {
+      document.getElementById('loadModal').style.display = 'block';
+      loadFileList();
+    }
+
+    function closeLoadModal() {
+      document.getElementById('loadModal').style.display = 'none';
+    }
+
+    async function loadFileList() {
+      try {
+        const response = await fetch('/api/svg/files');
+        const data = await response.json();
+        
+        if (response.ok) {
+          displayFileList(data.files);
+        } else {
+          document.getElementById('fileList').innerHTML = `<p style="color: red;">❌ ${data.error}</p>`;
+        }
+      } catch (error) {
+        console.error('Load files error:', error);
+        document.getElementById('fileList').innerHTML = '<p style="color: red;">❌ Network error occurred.</p>';
+      }
+    }
+
+    function displayFileList(files) {
+      const fileListEl = document.getElementById('fileList');
+      
+      if (files.length === 0) {
+        fileListEl.innerHTML = '<p>No saved files found. Create and save your first SVG!</p>';
+        return;
+      }
+
+      fileListEl.innerHTML = files.map(file => `
+        <div class="file-item">
+          <div class="file-info">
+            <h4>${file.name}</h4>
+            <p>Modified: ${new Date(file.modified).toLocaleDateString()}</p>
+            <p>Size: ${(file.size / 1024).toFixed(1)} KB</p>
+          </div>
+          <div class="file-actions">
+            <button onclick="loadFile('${file.id}')">📂 Load</button>
+            <button onclick="exportFile('${file.id}')">⬇️ Export</button>
+            <button onclick="deleteFile('${file.id}')" style="background-color: #dc3545;">🗑️ Delete</button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    async function loadFile(fileId) {
+      try {
+        const response = await fetch(`/api/svg/file/${fileId}`);
+        const data = await response.json();
+        
+        if (response.ok) {
+          codeEditor.value = data.content;
+          updatePreview();
+          closeLoadModal();
+        } else {
+          alert(`❌ Error loading file: ${data.error}`);
+        }
+      } catch (error) {
+        console.error('Load file error:', error);
+        alert('❌ Network error occurred while loading file.');
+      }
+    }
+
+    async function deleteFile(fileId) {
+      if (!confirm('Are you sure you want to delete this file? This cannot be undone.')) {
+        return;
+      }
+
+      try {
+        const response = await fetch(`/api/svg/file/${fileId}`, {
+          method: 'DELETE'
+        });
+        
+        if (response.ok) {
+          loadFileList(); // Refresh the list
+        } else {
+          const data = await response.json();
+          alert(`❌ Error deleting file: ${data.error}`);
+        }
+      } catch (error) {
+        console.error('Delete file error:', error);
+        alert('❌ Network error occurred while deleting file.');
+      }
+    }
+
+    async function exportFile(fileId) {
+      try {
+        const response = await fetch(`/api/svg/export/${fileId}`);
+        
+        if (response.ok) {
+          const blob = await response.blob();
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `${fileId}.svg`;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          URL.revokeObjectURL(url);
+        } else {
+          const data = await response.json();
+          alert(`❌ Error exporting file: ${data.error}`);
+        }
+      } catch (error) {
+        console.error('Export file error:', error);
+        alert('❌ Network error occurred while exporting file.');
+      }
+    }
+
+    // Handle Enter key in save filename input
+    document.getElementById('saveFilename').addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        saveFile();
+      }
+    });
+
+    // Submission functionality
+    function showSubmitModal() {
+      // Check if user is authenticated with Slack
+      if (!window.currentUser) {
+        alert('🔐 Please sign in with Slack to submit your design.\n\nClick the "Login with Slack" button in the top-right corner to continue.');
+        return;
+      }
+
+      document.getElementById('submitModal').style.display = 'block';
+      updateSubmitPreview();
+      
+      // Update authentication status display
+      const authUserInfo = document.getElementById('authUserInfo');
+      authUserInfo.textContent = `Signed in as: ${window.currentUser.name || 'Unknown'} (${window.currentUser.email || window.currentUser.id})`;
+      
+      // Pre-fill user info from Slack authentication
+      const emailInput = document.getElementById('email');
+      const slackIdInput = document.getElementById('slackId');
+      const firstNameInput = document.getElementById('firstName');
+      const surnameInput = document.getElementById('surname');
+      
+      emailInput.value = window.currentUser.email || '';
+      slackIdInput.value = window.currentUser.id || '';
+      
+      // Make only Slack ID read-only (users should be able to edit email if needed)
+      slackIdInput.readOnly = true;
+      slackIdInput.style.backgroundColor = '#f8f9fa';
+      
+      // Reset email field to be editable
+      emailInput.readOnly = false;
+      emailInput.style.backgroundColor = '';
+      
+      // Try to split name if available
+      if (window.currentUser.name) {
+        const nameParts = window.currentUser.name.split(' ');
+        firstNameInput.value = nameParts[0] || '';
+        surnameInput.value = nameParts.slice(1).join(' ') || '';
+        
+        // If name is available from Slack, make it read-only too
+        if (nameParts[0]) {
+          firstNameInput.readOnly = true;
+          firstNameInput.style.backgroundColor = '#f8f9fa';
+        }
+        if (nameParts.slice(1).join(' ')) {
+          surnameInput.readOnly = true;
+          surnameInput.style.backgroundColor = '#f8f9fa';
+        }
+      }
+    }
+
+    function closeSubmitModal() {
+      document.getElementById('submitModal').style.display = 'none';
+      document.getElementById('submitMessage').innerHTML = '';
+      updateSubmitPreview();
+    }
+
+    function updateSubmitPreview() {
+      const previewArea = document.getElementById('submitPreview');
+      let svgContent = codeEditor.value.trim();
+      
+      if (!svgContent) {
+        previewArea.innerHTML = '<p style="color: #666;">No design to preview</p>';
+        return;
+      }
+
+      try {
+        const parser = new DOMParser();
+        const svgDoc = parser.parseFromString(svgContent, 'image/svg+xml');
+        const parserErrors = svgDoc.getElementsByTagName('parsererror');
+        
+        if (parserErrors.length === 0) {
+          const svgElement = svgDoc.documentElement.cloneNode(true);
+          previewArea.innerHTML = '';
+          previewArea.appendChild(svgElement);
+        } else {
+          previewArea.innerHTML = '<p style="color: red;">Invalid SVG content</p>';
+        }
+      } catch (error) {
+        previewArea.innerHTML = '<p style="color: red;">Error previewing SVG</p>';
+      }
+    }
+
+    function importSVG() {
+      const input = document.createElement('input');
+      input.type = 'file';
+      input.accept = '.svg,image/svg+xml';
+      input.onchange = function(event) {
+        const file = event.target.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = function(e) {
+            codeEditor.value = e.target.result;
+            updatePreview();
+          };
+          reader.readAsText(file);
+        }
+      };
+      input.click();
+    }
+
+    async function submitDesign(event) {
+      event.preventDefault();
+      
+      const submitMessage = document.getElementById('submitMessage');
+      submitMessage.innerHTML = '';
+      
+      // Ensure user is still authenticated
+      if (!window.currentUser) {
+        submitMessage.innerHTML = '<div class="error-message">❌ Authentication required. Please sign in with Slack to submit your design.</div>';
+        setTimeout(() => {
+          closeSubmitModal();
+        }, 2000);
+        return;
+      }
+      
+      // Get form data
+      const formData = {
+        firstName: document.getElementById('firstName').value.trim(),
+        surname: document.getElementById('surname').value.trim(),
+        email: document.getElementById('email').value.trim(),
+        slackId: document.getElementById('slackId').value.trim(),
+        designNotes: document.getElementById('designNotes').value.trim(),
+        svgContent: codeEditor.value.trim(),
+        submittedAt: new Date().toISOString()
+      };
+      
+      // Validate required fields
+      if (!formData.firstName || !formData.surname || !formData.email) {
+        submitMessage.innerHTML = '<div class="error-message">Please fill in all required fields.</div>';
+        return;
+      }
+
+      // Validate that the Slack ID matches the authenticated user
+      if (formData.slackId !== window.currentUser.id) {
+        submitMessage.innerHTML = '<div class="error-message">❌ Authentication mismatch. Please refresh the page and try again.</div>';
+        return;
+      }
+      
+      if (!formData.svgContent) {
+        submitMessage.innerHTML = '<div class="error-message">Please create or import an SVG design before submitting.</div>';
+        return;
+      }
+      
+      try {
+        const response = await fetch('/api/submissions', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(formData)
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok) {
+          submitMessage.innerHTML = `
+            <div class="success-message">
+              <strong>✅ Design submitted successfully!</strong><br>
+              Submission ID: ${data.submissionId}<br>
+              Thank you for your submission!
+            </div>
+          `;
+          
+          // Clear form after successful submission
+          setTimeout(() => {
+            closeSubmitModal();
+          }, 3000);
+        } else {
+          submitMessage.innerHTML = `<div class="error-message">❌ ${data.error}</div>`;
+        }
+      } catch (error) {
+        console.error('Submit error:', error);
+        submitMessage.innerHTML = '<div class="error-message">❌ Network error occurred while submitting.</div>';
+      }
+    }
+
+    // Close modals when clicking outside
+    window.onclick = function(event) {
+      const saveModal = document.getElementById('saveModal');
+      const loadModal = document.getElementById('loadModal');
+      const submitModal = document.getElementById('submitModal');
+      
+      if (event.target === saveModal) {
+        closeSaveModal();
+      }
+      if (event.target === loadModal) {
+        closeLoadModal();
+      }
+      if (event.target === submitModal) {
+        closeSubmitModal();
+      }
+    };
+
+    // Dropdown functionality
+    function toggleDropdown() {
+      const dropdown = document.getElementById('actionsDropdown');
+      dropdown.classList.toggle('show');
+    }
+
+    function closeDropdown() {
+      const dropdown = document.getElementById('actionsDropdown');
+      dropdown.classList.remove('show');
+    }
+
+    // Close dropdown when clicking outside
+    window.addEventListener('click', function(event) {
+      if (!event.target.matches('.dropdown-toggle')) {
+        const dropdowns = document.getElementsByClassName('dropdown-menu');
+        for (let i = 0; i < dropdowns.length; i++) {
+          const openDropdown = dropdowns[i];
+          if (openDropdown.classList.contains('show')) {
+            openDropdown.classList.remove('show');
+          }
+        }
+      }
+    });
+
+    // Initialize clipboard status on page load
+    document.addEventListener('DOMContentLoaded', function() {
+      updateClipboardStatus();
+    });
+  </script>
+</body>
+</html>
