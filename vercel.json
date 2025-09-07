@@ -24,10 +24,6 @@
       "dest": "/src/assets/$1"
     },
     {
-      "src": "/favicon",
-      "dest": "/src/assets/favicon.png"
-    },
-    {
       "src": "/(.*)",
       "dest": "main.js"
     }
