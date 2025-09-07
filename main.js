@@ -17,11 +17,16 @@ app.get('/about', (req, res) => {
 app.get('/faq', (req, res) => {
     res.sendFile(__dirname + '/src/pages/faq.html');
 });
+
 if (fs.existsSync(__dirname + '/src/pages/start.html')) {
     app.get('/start', (req, res) => {
         res.sendFile(__dirname + '/src/pages/start.html');
     });
 }
+
+app.get('/editor', (req, res) => {
+    res.sendFile(__dirname + '/src/pages/editor.html');
+});
 
 app.get('/favicon', (req, res) => {
     res.sendFile(__dirname + '/src/assets/favicon.png');
