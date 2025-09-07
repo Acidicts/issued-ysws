@@ -42,9 +42,12 @@
         </div>
         <script>
             document.addEventListener('DOMContentLoaded', () => {
+                // Wait for page transition to complete before showing alert
                 setTimeout(() => {
-                    window.customAlert.warning("Warning", "This YSWS is currently a WIP and is not active");
-                }, 500);
+                    if (window.customAlert) {
+                        window.customAlert.warning("Warning", "This YSWS is currently a WIP and is not active");
+                    }
+                }, 1000); // Increased delay to let transition finish
             });
         </script>
     </body>

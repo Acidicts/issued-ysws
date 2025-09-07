@@ -10,9 +10,7 @@ document.addEventListener('DOMContentLoaded', function(event) {
         document.body.style.opacity = '1';
         document.querySelector('body').style.transform = 'translateX(0)';
     }, 200);
-})
-
-document.addEventListener('DOMContentLoaded', function(event) {
+    
     document.querySelectorAll('[disabled]').forEach(function(el) {
         el.classList.add('btn-unset');
     });
