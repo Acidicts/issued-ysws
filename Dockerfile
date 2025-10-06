@@ -8,8 +8,9 @@ WORKDIR /app
 COPY package*.json ./
 
 # Install dependencies
-RUN npm install --omit=dev && \
-    npm cache clean --force
+# Note: Due to npm exit handler bug in Docker, running install twice as workaround
+RUN npm install --omit=dev || true
+RUN npm install --omit=dev
 
 # Copy application files
 COPY . ./
